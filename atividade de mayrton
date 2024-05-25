@@ -1,0 +1,244 @@
+class Usuario {
+    #nome;
+    #senha;
+
+    constructor(nome, senha) {
+        this.#nome = nome;
+        this.#senha = senha;
+    }
+
+    get nome() {
+        return this.#nome;
+    }
+
+    set nome(nome) {
+        this.#nome = nome;
+    }
+
+    get senha() {
+        return this.#senha;
+    }
+
+    set senha(senha) {
+        this.#senha = senha;
+    }
+
+    verificarLogin(nome, senha) {
+        return this.#nome === nome && this.#senha === senha;
+    }
+}
+
+class Paciente extends Usuario {
+    #telefone;
+    #dataNascimento;
+    #altura;
+    #peso;
+
+    constructor(nome, senha, telefone, dataNascimento, altura, peso) {
+        super(nome, senha);
+        this.#telefone = telefone;
+        this.#dataNascimento = dataNascimento;
+        this.#altura = altura;
+        this.#peso = peso;
+    }
+
+    get telefone() {
+        return this.#telefone;
+    }
+
+    set telefone(telefone) {
+        this.#telefone = telefone;
+    }
+
+    get dataNascimento() {
+        return this.#dataNascimento;
+    }
+
+    set dataNascimento(dataNascimento) {
+        this.#dataNascimento = dataNascimento;
+    }
+
+    get altura() {
+        return this.#altura;
+    }
+
+    set altura(altura) {
+        this.#altura = altura;
+    }
+
+    get peso() {
+        return this.#peso;
+    }
+
+    set peso(peso) {
+        this.#peso = peso;
+    }
+
+    atualizarDados(telefone, dataNascimento, altura, peso) {
+        this.#telefone = telefone;
+        this.#dataNascimento = dataNascimento;
+        this.#altura = altura;
+        this.#peso = peso;
+        console.log("Dados do paciente atualizados com sucesso!");
+    }
+}
+
+class Administrador extends Usuario {
+    constructor(nome, senha) {
+        super(nome, senha);
+    }
+}
+
+const usuarios = [];
+const pacientes = [];
+
+function cadastrarUsuario() {
+    const nome = prompt("Digite o nome de usuário:");
+    const senha = prompt("Digite a senha:");
+
+    if (nome && senha) {
+        usuarios.push(new Administrador(nome, senha));
+        console.log("Usuário cadastrado com sucesso!");
+    } else {
+        console.log("Nome de usuário e senha são obrigatórios.");
+    }
+}
+
+function fazerLogin() {
+    const username = prompt("Digite o nome de usuário:");
+    const password = prompt("Digite a senha:");
+
+    const usuario = usuarios.find(u => u.verificarLogin(username, password));
+
+    if (usuario) {
+        console.log("Login bem-sucedido!");
+        menuAdministrador();
+    } else {
+        console.log("Usuário ou senha incorretos!");
+    }
+}
+
+function menuAdministrador() {
+    let opcao;
+    do {
+        opcao = prompt(
+            "Selecione uma opção:\n" +
+            "1. Cadastrar paciente\n" +
+            "2. Listar pacientes\n" +
+            "3. Atualizar paciente\n" +
+            "4. Remover paciente\n" +
+            "5. Sair\n" +
+            "Digite o número da opção:"
+        );
+        switch (opcao) {
+            case "1":
+                cadastrarPaciente();
+                break;
+            case "2":
+                listarPacientes();
+                break;
+            case "3":
+                atualizarPaciente();
+                break;
+            case "4":
+                removerPaciente();
+                break;
+            case "5":
+                console.log("Saindo do sistema...");
+                break;
+            default:
+                console.log("Opção inválida.");
+        }
+    } while (opcao !== "5");
+}
+
+function cadastrarPaciente() {
+    const nome = prompt("Digite o nome do paciente:");
+    const senha = prompt("Digite a senha do paciente:");
+    const telefone = prompt("Digite o telefone do paciente:");
+    const dataNascimento = prompt("Digite a data de nascimento do paciente:");
+    const altura = parseFloat(prompt("Digite a altura do paciente:"));
+    const peso = parseFloat(prompt("Digite o peso do paciente:"));
+
+    const pacienteNovo = new Paciente(nome, senha, telefone, dataNascimento, altura, peso);
+    pacientes.push(pacienteNovo);
+
+    console.log("Paciente cadastrado com sucesso!");
+    console.log("Nome:", pacienteNovo.nome);
+    console.log("Telefone:", pacienteNovo.telefone);
+    console.log("Data de Nascimento:", pacienteNovo.dataNascimento);
+    console.log("Altura:", pacienteNovo.altura);
+    console.log("Peso:", pacienteNovo.peso);
+}
+
+function listarPacientes() {
+    if (pacientes.length === 0) {
+        console.log("Não há pacientes cadastrados.");
+    } else {
+        console.log("Lista de pacientes:");
+        pacientes.forEach(paciente => {
+            console.log("Nome:", paciente.nome);
+            console.log("Telefone:", paciente.telefone);
+            console.log("Data de Nascimento:", paciente.dataNascimento);
+            console.log("Altura:", paciente.altura);
+            console.log("Peso:", paciente.peso);
+            console.log("-----------------------");
+        });
+    }
+}
+
+function atualizarPaciente() {
+    const nome = prompt("Digite o nome do paciente a ser atualizado:");
+    const paciente = pacientes.find(p => p.nome === nome);
+
+    if (paciente) {
+        const telefone = prompt("Digite o novo telefone do paciente:");
+        const dataNascimento = prompt("Digite a nova data de nascimento do paciente:");
+        const altura = parseFloat(prompt("Digite a nova altura do paciente:"));
+        const peso = parseFloat(prompt("Digite o novo peso do paciente:"));
+
+        paciente.atualizarDados(telefone, dataNascimento, altura, peso);
+    } else {
+        console.log("Paciente não encontrado.");
+    }
+}
+
+function removerPaciente() {
+    const nome = prompt("Digite o nome do paciente a ser removido:");
+    const index = pacientes.findIndex(p => p.nome === nome);
+
+    if (index !== -1) {
+        pacientes.splice(index, 1);
+        console.log("Paciente removido com sucesso.");
+    } else {
+        console.log("Paciente não encontrado.");
+    }
+}
+
+function menuPrincipal() {
+    let opcao;
+    do {
+        opcao = prompt(
+            "Menu Principal:\n" +
+            "1. Cadastrar novo usuário\n" +
+            "2. Login como Administrador\n" +
+            "3. Sair\n" +
+            "Digite o número da opção:"
+        );
+        switch (opcao) {
+            case "1":
+                cadastrarUsuario();
+                break;
+            case "2":
+                fazerLogin();
+                break;
+            case "3":
+                console.log("Saindo do sistema...");
+                break;
+            default:
+                console.log("Opção inválida.");
+        }
+    } while (opcao !== "3");
+}
+
+menuPrincipal();
